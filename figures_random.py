@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import random
 from Figure import Figure
@@ -12,7 +11,7 @@ COLORS = {
 
 SHAPES = ["circle", "rectangle", "triangle"]
 
-SIZES = ["small", "middle", "large"]
+SIZES = ["small", "medium", "large"]
 
 
 def randomcolor():
@@ -28,7 +27,7 @@ def randomsize():
     return random.choice(SIZES)
 
 
-def randombox(imagesize, minrow=0, mincol=0, boxsize="middle"):
+def randombox(imagesize, minrow=0, mincol=0, boxsize="medium"):
     """
     Get a random postion for a bounding box
     :return: coords of the bounding box in the form ((r0, r1), (c0, c1))
@@ -52,7 +51,7 @@ def getsizebounds(imagesize):
 
     size_bounds = {
         "small": (int(np.floor(imgwidth*0.05)), int(np.floor(imgwidth*0.12))),
-        "middle": (int(np.floor(imgwidth*0.13)), int(np.floor(imgwidth*0.18))),
+        "medium": (int(np.floor(imgwidth*0.13)), int(np.floor(imgwidth*0.18))),
         "large": (int(np.floor(imgwidth*0.19)), int(np.floor(imgwidth*0.25)))
     }
 

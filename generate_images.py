@@ -30,7 +30,7 @@ def generate_image_with_caption(imageshape, maxshapes, allowoverlap=False, allow
     figures = []
 
     # generate random figures until we have 'maxshapes' figures. Note that this approach can lead to a long runtime
-    # if the probability of overlap is high
+    # if the probability of overlap is high since we resample every time the shape/figure doesn't fit
     drawn_shapes = 0
     while drawn_shapes < maxshapes:
         figure = figures_random.randomfigure(imgsize)
@@ -71,30 +71,37 @@ if __name__ == '__main__':
                         required=False,
                         help="Number of generated images")
     parser.add_argument("--image_size",
-                        default=(255, 255),
-                        type=tuple,
+                        default=(256, 256),
+                        nargs=2,
+                        type=int,
                         required=False,
-                        help="Size of the image")
+                        help="Size of the images")
     parser.add_argument("--output_dir",
                         default="output",
                         type=str,
                         required=False,
-                        help="The output directory where the dataset will we written.")
+                        help="The output directory where the dataset will we written")
     parser.add_argument("--shapes_per_image",
                         default=3,
                         type=int,
                         required=False,
-                        help="Number of shapes per generates image.")
+                        help="Number of shapes per generates image")
     parser.add_argument("--background_color",
                         default=BACKGROUND_COLORS["white"],
-                        type=tuple,
+                        nargs=3,
+                        type=int,
                         required=False,
-                        help="Backgroundcolor of the generated images")
+                        help="Background color of the generated images")
     parser.add_argument("--allow_overlap",
                         default=False,
                         type=bool,
                         required=False,
-                        help="Whether the figure can overlap")
+                        help="Whether the figures can overlap")
+    parser.add_argument("--allow_clipping",
+                        default=False,
+                        type=bool,
+                        required=False,
+                        help="Whether the figures can exceed the image borders")
     parser.add_argument("--random_seed",
                         default=None,
                         type=int,
@@ -106,7 +113,7 @@ if __name__ == '__main__':
 
     if os.path.exists(args.output_dir) and os.listdir(args.output_dir):
         raise ValueError("Output directory ({}) already exists and is not empty.".format(args.output_dir))
-    os.makedirs(args.output_dir, exist_ok=True)
+    os.makedirs(args.output_dir)
 
     imagedir = os.path.join(args.output_dir,"images")
     os.makedirs(imagedir)
@@ -121,6 +128,7 @@ if __name__ == '__main__':
         for i in range(args.num_images):
             # generate image and caption
             img, caption = generate_image_with_caption(imgshape, args.shapes_per_image, allowoverlap=args.allow_overlap,
+                                                       allowclipping=args.allow_clipping,
                                                        backgroundcolor=args.background_color)
             # store image
             imgfilename = os.path.join(imagedir, "img" + str(i) + IMG_FORMAT)
