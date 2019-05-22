@@ -2,7 +2,7 @@
 
 This repository contains an implementation for generating simple, artificial image-caption datasets. 
 
-The generated images contain figures which can have three types of different shapes (*rectangle*, *triangle*, *circle*), one of four different colors (*blue*,*red*,*green*,*yellow*) and one of the sizes (*small*,*medium*,*large*). The positions of the shapes in an image are randomly sampled. The captions for the images always follow the same pattern. Each row(sentence) of the a caption describes one of the figures in the images in terms of its shapename, color, size and position. The position can be one of the following (top left, top right, bottom left, bottom right, left, right, top, bottom, center). The image is divided into approximately four quadrants and position labels are assigned accordingly.
+The generated images contain figures which can have three types of different shapes (*rectangle*, *triangle*, *circle*), one of four different colors (*blue*,*red*,*green*,*yellow*) and one of the sizes (*small*,*medium*,*large*). The positions of the shapes in an image are randomly sampled. The captions for the images always follow the same pattern. Each row(sentence) of the a caption describes one of the figures in the images in terms of its shapename, color, size and position. The position can be one of the following (top left, top right, bottom left, bottom right, left, right, top, bottom, center). The image is divided into four quadrants and position labels are assigned accordingly.
 
 The purpose of the datasets is to use them for debugging sophisticated models. Since the generated datasets are very simple, any properly working model should be able to solve the them.
 
