@@ -5,6 +5,7 @@ import argparse
 import csv
 import os
 from Figure import Figure
+from config import SCConfig
 
 BACKGROUND_COLORS = {
     "black": (0, 0, 0),
@@ -16,12 +17,12 @@ IMG_FORMAT = ".png"
 CSVHEADER = ["file_name", "caption"]
 
 def generate_image_with_caption(imageshape, maxshapes, allowoverlap=False, allowclipping=False,
-                                backgroundcolor=BACKGROUND_COLORS["white"]):
+                                backgroundcolor=BACKGROUND_COLORS["white"], exclude_stmts=[]):
 
     img = np.zeros(imageshape, dtype=np.double)
     imgsize = (img.shape[0], img.shape[1])
 
-    # set all pixel to the background color
+    # set the background color for all pixels
     for x in range(0, imgsize[0]):
         for y in range(0, imgsize[1]):
             img[x, y, :] = backgroundcolor
@@ -33,7 +34,7 @@ def generate_image_with_caption(imageshape, maxshapes, allowoverlap=False, allow
     # if the probability of overlap is high since we resample every time the shape/figure doesn't fit
     drawn_shapes = 0
     while drawn_shapes < maxshapes:
-        figure = figures_random.randomfigure(imgsize)
+        figure = figures_random.randomfigure(imgsize, exclude_stmts)
         if (allowoverlap or not isoverlapping(figure, figures)) and (allowclipping or not exceedesimagebounds(figure,
                                                                                                            imgsize)):
             figures.append(figure)
@@ -64,52 +65,21 @@ def exceedesimagebounds(figure, imagesize):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    ## Required parameters
-    parser.add_argument("--num_images",
-                        default=50,
-                        type=int,
+    parser.add_argument("--config_file",
+                        default="config/default_config.json",
+                        type=str,
                         required=False,
-                        help="Number of generated images")
-    parser.add_argument("--image_size",
-                        default=(256, 256),
-                        nargs=2,
-                        type=int,
-                        required=False,
-                        help="Size of the images")
+                        help="The config file that defines the parameters")
     parser.add_argument("--output_dir",
                         default="output",
                         type=str,
                         required=False,
                         help="The output directory where the dataset will we written")
-    parser.add_argument("--shapes_per_image",
-                        default=3,
-                        type=int,
-                        required=False,
-                        help="Number of shapes per generates image")
-    parser.add_argument("--background_color",
-                        default=BACKGROUND_COLORS["white"],
-                        nargs=3,
-                        type=int,
-                        required=False,
-                        help="Background color of the generated images")
-    parser.add_argument("--allow_overlap",
-                        default=False,
-                        type=bool,
-                        required=False,
-                        help="Whether the figures can overlap")
-    parser.add_argument("--allow_clipping",
-                        default=False,
-                        type=bool,
-                        required=False,
-                        help="Whether the figures can exceed the image borders")
-    parser.add_argument("--random_seed",
-                        default=None,
-                        type=int,
-                        required=False,
-                        help="A random seed for the image generation")
 
     args = parser.parse_args()
-    np.random.seed(args.random_seed)
+    config = SCConfig.from_json(args.config_file)
+
+    np.random.seed(config.random_seed)
 
     if os.path.exists(args.output_dir) and os.listdir(args.output_dir):
         raise ValueError("Output directory ({}) already exists and is not empty.".format(args.output_dir))
@@ -122,14 +92,15 @@ if __name__ == '__main__':
         csvwriter = csv.writer(csvf)
         csvwriter.writerow(CSVHEADER)
 
-        imgsize = args.image_size
+        imgsize = config.image_size
         imgshape = (imgsize[0], imgsize[1], 3)
 
-        for i in range(args.num_images):
+        for i in range(config.num_images):
             # generate image and caption
-            img, caption = generate_image_with_caption(imgshape, args.shapes_per_image, allowoverlap=args.allow_overlap,
-                                                       allowclipping=args.allow_clipping,
-                                                       backgroundcolor=args.background_color)
+            img, caption = generate_image_with_caption(imgshape, config.shapes_per_image, allowoverlap=config.allow_overlap,
+                                                       allowclipping=config.allow_clipping,
+                                                       backgroundcolor=config.background_color,
+                                                       exclude_stmts=config.exclude_stmts)
             # store image
             imgfilename = os.path.join(imagedir, "img" + str(i) + IMG_FORMAT)
             mpimg.imsave(imgfilename, img)

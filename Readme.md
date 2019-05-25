@@ -17,24 +17,26 @@ It will probably also work with older versions but has not been tested.
 ## Generating Datasets
 A dataset can be generated via
 ```
-python generate_images.py [--parameter1 val1][--parameter2 val2] ... (see table below)
+python generate_images.py --config_file <config_file> [--output_dir <output_dir>]
 ```
-This will create a folder ```images``` that contains the generated images and a csv-file ```image_captions.csv``` that contains the captions for the images in the folder specified by ```--output```.
+This will create a folder ```images``` that contains the generated images and a csv-file ```image_captions.csv``` that contains the captions for the images in the folder specified by ```--output_dir```.
 The ```image_captions.csv``` file has one row for the relative path to an image and one row for the corresponding caption.
-The following table lists the parameters that can be used with the generate_images.py command
+
+More parameters for the dataset creation can be configured in a ```.json``` file (see config/default_config.json for an example).\
+The following table lists the configurable parameters.
 
 **Parameters:**
 
-| Name | Description | Default value |
-| --- | --- | --- |
-| --num\_images | Number of generated images.  | 50 |
-| --image\_size | Size of the images | 256 256 | 
-| --output\_dir | The output directory where the dataset will we written | output | 
-| --shapes\_per\_image | Number of shapes per generated image| 3 | 
-| --background\_color | Background color of the generated images | 255 255 255|
-| --allow\_overlap | Whether the figures can overlap | False | 
-| --allow\_clipping| Whether the figures can exceed the image borders | False | 
-| --random\_seed | A random seed for the image generation| None | 
+| Name | Description |
+| --- | --- |
+| num\_images | Number of generated images |
+| image\_size | Size of the images |
+| output\_dir | The output directory where the dataset will we written |
+| shapes\_per\_image | Number of shapes per generated image|
+| background\_color | Background color of the generated images |
+| allow\_overlap | Whether the figures can overlap |
+| allow\_clipping| Whether the figures can exceed the image borders | 
+| random\_seed | A random seed for the image generation| 
 
 
 

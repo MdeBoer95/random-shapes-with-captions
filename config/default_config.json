@@ -1,0 +1,10 @@
+{
+  "num_images": 50,
+  "image_size": [256, 256],
+  "shapes_per_image": 3,
+  "background_color": [255, 255, 255],
+  "allow_overlap": false,
+  "allow_clipping": false,
+  "random_seed": null,
+  "exclude_statements": [["green", "medium" , "circle"]]
+}

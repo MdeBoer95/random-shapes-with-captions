@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import itertools
 from Figure import Figure
 
 COLORS = {
@@ -12,19 +13,6 @@ COLORS = {
 SHAPES = ["circle", "rectangle", "triangle"]
 
 SIZES = ["small", "medium", "large"]
-
-
-def randomcolor():
-    key = random.choice(list(COLORS.keys()))
-    return key, COLORS[key]
-
-
-def randomshape():
-    return random.choice(SHAPES)
-
-
-def randomsize():
-    return random.choice(SIZES)
 
 
 def randombox(imagesize, minrow=0, mincol=0, boxsize="medium"):
@@ -58,9 +46,32 @@ def getsizebounds(imagesize):
     return size_bounds
 
 
-def randomfigure(imagesize):
-    shape = randomshape()
-    size = randomsize()
+def attribute_combinations(exclude_statements=[]):
+    """
+    Get all allowed attribute combinations for the figures. The allowed combinations can be restricted by the
+    exclude_statements property in the config file.
+    :param exclude_statements:
+    :return:
+    """
+    excluded_combs = []
+    for exclude_group in exclude_statements:
+        # excluded tuples according to the given exclude-statement (COLOR, SIZE, SHAPE)
+        # if no valid value is specified for an attribute we count it as wildcard (i.e. add all elements for that attr.)
+        excluded_attr = [[exclude_group[0]] if exclude_group[0] in COLORS.keys() else list(COLORS.keys()),
+                         [exclude_group[1]] if exclude_group[1] in SIZES else SIZES,
+                         [exclude_group[2]] if exclude_group[2] in SHAPES else SHAPES]
+        # all excluded combinations
+        excluded_combs.extend(list(itertools.product(*excluded_attr)))
+
+    attrs = [list(COLORS.keys()), SIZES, SHAPES]
+    included_combs = set(itertools.product(*attrs)) - set(excluded_combs)
+    return list(included_combs)
+
+
+def randomfigure(imagesize, exclude_statements=[]):
+    attrs = random.choice(attribute_combinations(exclude_statements))
+    shape = attrs[2]
+    size = attrs[1]
     pos = randombox(imagesize, boxsize=size)
-    color = randomcolor()
+    color = (attrs[0], COLORS[attrs[0]])
     return Figure(shape=shape, pos=pos, color=color, size=size)
