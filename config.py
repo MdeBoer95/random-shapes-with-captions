@@ -3,7 +3,8 @@ import json
 
 class SCConfig(object):
 
-    def __init__(self, num_images, image_size, shapes_per_image, background_color, allow_overlap, allow_clipping, random_seed, exclude_stmts):
+    def __init__(self, num_images, image_size, shapes_per_image, background_color, allow_overlap, allow_clipping,
+                 random_seed, exclude_stmts):
         self.num_images = num_images
         self.image_size = image_size
         self.shapes_per_image = shapes_per_image

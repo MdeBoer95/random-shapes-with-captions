@@ -6,6 +6,7 @@ import csv
 import os
 from Figure import Figure
 from config import SCConfig
+from stats import DatasetStatistics
 
 BACKGROUND_COLORS = {
     "black": (0, 0, 0),
@@ -43,7 +44,7 @@ def generate_image_with_caption(imageshape, maxshapes, allowoverlap=False, allow
             drawn_shapes += 1
 
     caption = generate_caption(descriptions)
-    return img, caption
+    return img, caption, figures
 
 
 def generate_caption(listofdescriptions):
@@ -66,10 +67,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--config_file",
-                        default="config/default_config.json",
                         type=str,
-                        required=False,
-                        help="The config file that defines the parameters")
+                        required=True,
+                        help="The configs file that defines the parameters")
     parser.add_argument("--output_dir",
                         default="output",
                         type=str,
@@ -95,14 +95,22 @@ if __name__ == '__main__':
         imgsize = config.image_size
         imgshape = (imgsize[0], imgsize[1], 3)
 
+        stats = DatasetStatistics()
+
         for i in range(config.num_images):
             # generate image and caption
-            img, caption = generate_image_with_caption(imgshape, config.shapes_per_image, allowoverlap=config.allow_overlap,
-                                                       allowclipping=config.allow_clipping,
-                                                       backgroundcolor=config.background_color,
-                                                       exclude_stmts=config.exclude_stmts)
+            img, caption, figures = generate_image_with_caption(imgshape, config.shapes_per_image,
+                                                                allowoverlap=config.allow_overlap,
+                                                                allowclipping=config.allow_clipping,
+                                                                backgroundcolor=config.background_color,
+                                                                exclude_stmts=config.exclude_stmts)
+            #update statistics
+            stats.update(figures, imgsize)
+
             # store image
             imgfilename = os.path.join(imagedir, "img" + str(i) + IMG_FORMAT)
             mpimg.imsave(imgfilename, img)
             # store file name and caption in csv file
             csvwriter.writerow([imgfilename, caption])
+
+        print(stats)

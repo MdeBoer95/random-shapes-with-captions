@@ -42,7 +42,7 @@ class Figure(object):
         elif self.shape == "triangle":
             drawtriangle(self, image)
 
-    def generate_position_label(self, imagesize):
+    def position_label(self, imagesize):
         """
         Return the position label based on the coordinates of the bounding box of the shape. The image is devided
         into 4 areas: top left, top right, bottom left, bottom right
@@ -75,13 +75,13 @@ class Figure(object):
         if horizontal_pos == "" and vertical_pos == "":
             return "center"
 
-        return " ".join([vertical_pos, horizontal_pos])
+        return " ".join([vertical_pos, horizontal_pos]).strip()
 
     def generate_description(self, imagesize):
         size = self.size if self.size else ""
         shape_name = self.shape
         color_name = self.color[0]
-        pos = self.generate_position_label(imagesize)
+        pos = self.position_label(imagesize)
         description = "A " + size + " " + color_name + " " + shape_name + " at the " + pos
         return description
 

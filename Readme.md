@@ -37,6 +37,17 @@ The following table lists the configurable parameters.
 | allow\_overlap | Whether the figures can overlap |
 | allow\_clipping| Whether the figures can exceed the image borders | 
 | random\_seed | A random seed for the image generation| 
+|exclude_statements| A list of statements that describe which combinations of attributes should not appear in the generated images. See section **Exclude Statements** below for more infos.|
 
 
+## Exclude-Statements
+The ```exclude_statements``` parameter allows to exclude certain combinations of attributes for the figures in the generated images.
+This is helpful to create a train and a test set where the test set contains figures that are not included 
+in the training set. For example one could exclude *small blue circles* from the training set and only include them in the test set.
 
+The parameter takes a list of statements where each statement describes a conjunction of attributes in the from of ```[color, size, shape]```.\
+E.g.: ```[blue, small, circle] ``` describes all *small blue circles*.\
+It is also possible to pass wildcards by setting the attribute to ```-``` (or any unknown value).
+E.g.:```[blue,-,cricle]``` describes all blue circles, regardless their size.\
+All figures that are described by any of the statements in the list, will not appear in the generated dataset.
+  

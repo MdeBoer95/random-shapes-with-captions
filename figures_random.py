@@ -49,7 +49,7 @@ def getsizebounds(imagesize):
 def attribute_combinations(exclude_statements=[]):
     """
     Get all allowed attribute combinations for the figures. The allowed combinations can be restricted by the
-    exclude_statements property in the config file.
+    exclude_statements property in the configs file.
     :param exclude_statements:
     :return:
     """
