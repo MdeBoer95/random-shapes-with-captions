@@ -1,18 +1,8 @@
 import numpy as np
 import random
 import itertools
-from Figure import Figure
-
-COLORS = {
-        "red": (255, 0, 0),
-        "blue": (0, 0, 255),
-        "green": (0, 255, 0),
-        "yellow": (255, 255, 0)
-    }
-
-SHAPES = ["circle", "rectangle", "triangle"]
-
-SIZES = ["small", "medium", "large"]
+from figure.Figure import Figure
+from figure.Figure import COLORS, SHAPES, SIZES
 
 
 def randombox(imagesize, minrow=0, mincol=0, boxsize="medium"):

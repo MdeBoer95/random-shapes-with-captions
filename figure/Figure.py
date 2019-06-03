@@ -1,6 +1,17 @@
 import numpy as np
 from skimage import draw
 
+COLORS = {
+        "red": (255, 0, 0),
+        "blue": (0, 0, 255),
+        "green": (0, 255, 0),
+        "yellow": (255, 255, 0)
+    }
+
+SHAPES = ["circle", "rectangle", "triangle"]
+
+SIZES = ["small", "medium", "large"]
+
 def drawcircle(figure, image):
     radius = (figure.pos[0][1] - figure.pos[0][0])/2
     centerrow = figure.pos[0][0] + radius

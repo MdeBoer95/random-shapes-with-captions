@@ -1,21 +1,14 @@
 import matplotlib.image as mpimg
 import numpy as np
-import figures_random
+import figure.figures_random as figures_random
 import argparse
 import csv
 import os
-from Figure import Figure
+from figure.Figure import Figure
 from config import SCConfig
-from stats import DatasetStatistics
+from stats.stats import DatasetStatistics
+from dataset_constants import BACKGROUND_COLORS, IMG_FORMAT, CAPTION_CSVHEADER
 
-BACKGROUND_COLORS = {
-    "black": (0, 0, 0),
-    "white": (255, 255, 255)
-}
-
-IMG_FORMAT = ".png"
-
-CSVHEADER = ["file_name", "caption"]
 
 def generate_image_with_caption(imageshape, maxshapes, allowoverlap=False, allowclipping=False,
                                 backgroundcolor=BACKGROUND_COLORS["white"], exclude_stmts=[]):
@@ -75,6 +68,11 @@ if __name__ == '__main__':
                         type=str,
                         required=False,
                         help="The output directory where the dataset will we written")
+    parser.add_argument("--stats_file",
+                        default="dataset_statistics.csv",
+                        type=str,
+                        required=False,
+                        help="File where the dataset statistics will be written")
 
     args = parser.parse_args()
     config = SCConfig.from_json(args.config_file)
@@ -90,7 +88,7 @@ if __name__ == '__main__':
 
     with open(os.path.join(args.output_dir, "image_captions.csv"), "w") as csvf:
         csvwriter = csv.writer(csvf)
-        csvwriter.writerow(CSVHEADER)
+        csvwriter.writerow(CAPTION_CSVHEADER)
 
         imgsize = config.image_size
         imgshape = (imgsize[0], imgsize[1], 3)
@@ -105,7 +103,7 @@ if __name__ == '__main__':
                                                                 backgroundcolor=config.background_color,
                                                                 exclude_stmts=config.exclude_stmts)
             #update statistics
-            stats.update(figures, imgsize)
+            stats.update(figures)
 
             # store image
             imgfilename = os.path.join(imagedir, "img" + str(i) + IMG_FORMAT)
@@ -113,4 +111,5 @@ if __name__ == '__main__':
             # store file name and caption in csv file
             csvwriter.writerow([imgfilename, caption])
 
-        print(stats)
+        stats.write_to_file(os.path.join(args.output_dir, "dataset_statistics"), imgsize)
+
