@@ -5,13 +5,15 @@ from figure.Figure import Figure
 from figure.Figure import COLORS, SHAPES, SIZES
 
 
-def randombox(imagesize, minrow=0, mincol=0, boxsize="medium"):
+def randombox(imagesize, minrow=0, mincol=0, maxrow=None, maxcol=None, boxsize="medium"):
     """
     Get a random postion for a bounding box
     :return: coords of the bounding box in the form ((r0, r1), (c0, c1))
     """
-    maxrow = imagesize[0]
-    maxcol = imagesize[1]
+    if not maxrow:
+        maxrow = imagesize[0]
+    if not maxcol:
+        maxcol = imagesize[1]
     size_bounds = getsizebounds(imagesize)[boxsize]
     width = np.random.randint(size_bounds[0], size_bounds[1])
 

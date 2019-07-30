@@ -1,4 +1,4 @@
-import matplotlib.image as mpimg
+import skimage.io as io
 import numpy as np
 import argparse
 import csv
@@ -25,12 +25,8 @@ def generate_image_with_caption(imageshape, figure, allowclipping=False,
         figure.draw(img)
         figure.generate_description(imgsize)
 
-    caption = generate_caption(figure.generate_description(imgsize))
+    caption = figure.generate_description(imgsize)
     return img, caption
-
-
-def generate_caption(listofdescriptions):
-    return '\n'.join(listofdescriptions)
 
 
 def isoverlapping(figure, figures):
@@ -73,11 +69,11 @@ def generate_set(setname, combs, imgsize, allow_clipping, background_color, outp
             img, caption = generate_image_with_caption(imgshape, figure,
                                                        backgroundcolor=background_color)
             stats.update([figure])
-
-            imgfilename = os.path.join(imagedir, "img" + str(i) + IMG_FORMAT)
-            mpimg.imsave(imgfilename, img)
+            im_name = "img" + str(i)
+            imgfilename = os.path.join(imagedir, im_name + IMG_FORMAT)
+            io.imsave(imgfilename, img)
             # store file name and caption in csv file
-            csvwriter.writerow([imgfilename, caption])
+            csvwriter.writerow([im_name, caption])
 
     stats.write_to_file(os.path.join(setdir, "dataset_statistics.csv"), imgsize)
 

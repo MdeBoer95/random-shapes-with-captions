@@ -1,9 +1,9 @@
-import matplotlib.image as mpimg
 import numpy as np
 import figure.figures_random as figures_random
 import argparse
 import csv
 import os
+from skimage import io
 from figure.Figure import Figure
 from config import SCConfig
 from stats.stats import DatasetStatistics
@@ -64,7 +64,7 @@ if __name__ == '__main__':
                         required=True,
                         help="The configs file that defines the parameters")
     parser.add_argument("--output_dir",
-                        default="output",
+                        default="output1",
                         type=str,
                         required=False,
                         help="The output directory where the dataset will we written")
@@ -106,10 +106,11 @@ if __name__ == '__main__':
             stats.update(figures)
 
             # store image
-            imgfilename = os.path.join(imagedir, "img" + str(i) + IMG_FORMAT)
-            mpimg.imsave(imgfilename, img)
+            img_name = "img" + str(i)
+            imgfilename = os.path.join(imagedir, img_name + IMG_FORMAT)
+            io.imsave(imgfilename, img)
             # store file name and caption in csv file
-            csvwriter.writerow([imgfilename, caption])
+            csvwriter.writerow([img_name, caption])
 
         stats.write_to_file(os.path.join(args.output_dir, "dataset_statistics"), imgsize)
 
